@@ -1,0 +1,46 @@
+<html>
+<head>
+	<title>Insta PP Downloader</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+<body>
+<!-- vkavadarli: commit test -->
+	<div ng-app="ngApp" ng-controller="ngCtrl">
+		<input ng-model="username" placeholder="write username here..."></input>
+		<button ng-click="getData()">Get</button><br>
+		<img ng-src="{{userdata}}" /> 
+	</div>
+	
+	<script>
+		var app = angular.module('ngApp', []);
+		app.controller('ngCtrl', function($scope, $http) {
+			
+			$scope.getData = function() {
+				console.log($scope.username);
+				$http({
+					method: 'GET',
+					url: 'https://apinsta.herokuapp.com/u/' + $scope.username,
+				}).then(function successCallback(response) {
+					$scope.userid = response.data.logging_page_id.split('_')[1];
+					
+					$http({
+						method: 'GET',
+						url: 'https://i.instagram.com/api/v1/users/'+$scope.userid+'/info/',
+					}).then(function successCallback(response) {
+						$scope.userdata = response.data.user.hd_profile_pic_url_info.url;
+					}, function errorCallback(data, status, headers, config) {
+						alert('Error');
+					});
+					
+					
+				}, function errorCallback(data, status, headers, config) {
+					alert('Error');
+				});
+			}
+			
+	
+		});
+	</script>
+	
+</body>
+</html>
